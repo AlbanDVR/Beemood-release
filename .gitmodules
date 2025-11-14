@@ -1,0 +1,6 @@
+[submodule "front"]
+	path = front
+	url = git@forge.univ-lyon1.fr:beemood/front.git
+[submodule "back"]
+	path = back
+	url = git@forge.univ-lyon1.fr:beemood/back.git
