@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS MusicServices (
 
 -- 2. Création de la table Users
 CREATE TABLE IF NOT EXISTS Users (
-    ID UUID PRIMARY KEY,
+    ID VARCHAR(255) PRIMARY KEY,
     SpotifyAccessToken VARCHAR,
     SpotifyRefreshToken VARCHAR,
     JoinTime DATE DEFAULT CURRENT_DATE
