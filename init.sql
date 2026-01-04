@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS Users (
 -- 3. Création de la table Playlists
 CREATE TABLE IF NOT EXISTS Playlists (
     ID UUID PRIMARY KEY,
-    Author UUID,
+    Author VARCHAR(255),
     Title VARCHAR(255),
     Tracks VARCHAR[], 
     MusicService VARCHAR(255),
