@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-beemood}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-beemood}
-      POSTGRES_DB: ${POSTGRES_DB:-beemood}
+      POSTGRES_DB: ${POSTGRES_DB:-beemooddb}
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
