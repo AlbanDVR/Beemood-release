@@ -1,5 +1,5 @@
-CREATE DATABASE beemooddb;
-\c beemooddb;
+CREATE DATABASE beemood;
+\c beemood;
 
 -- Enable pgcrypto extension for gen_random_uuid()
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
