@@ -1,0 +1,84 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  REGISTRY_URL: $CI_REGISTRY
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  GIT_SUBMODULE_STRATEGY: recursive
+
+# Build backend image
+build-backend:
+  stage: build
+  image: docker:24-dind
+  services:
+    - docker:24-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -f ./back/Dockerfile.prod -t $CI_REGISTRY_IMAGE/backend:$IMAGE_TAG -t $CI_REGISTRY_IMAGE/backend:latest ./back
+    - docker push $CI_REGISTRY_IMAGE/backend:$IMAGE_TAG
+    - docker push $CI_REGISTRY_IMAGE/backend:latest
+  only:
+    - main
+
+# Build frontend image
+build-frontend:
+  stage: build
+  image: docker:24-dind
+  services:
+    - docker:24-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -f ./front/Dockerfile.prod -t $CI_REGISTRY_IMAGE/frontend:$IMAGE_TAG -t $CI_REGISTRY_IMAGE/frontend:latest ./front
+    - docker push $CI_REGISTRY_IMAGE/frontend:$IMAGE_TAG
+    - docker push $CI_REGISTRY_IMAGE/frontend:latest
+  only:
+    - main
+
+# Deploy to VPS
+deploy-vps:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $VPS_USER@$VPS_HOST << 'ENDSSH'
+        cd /home/milo/apps/docker/beemood
+        
+        # Pull latest code
+        git pull origin main || git pull origin master
+        
+        # Login to GitLab registry
+        echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+        
+        # Pull latest images
+        docker compose -f compose.prod.yaml pull
+        
+        # Stop and remove old containers
+        docker compose -f compose.prod.yaml down
+        
+        # Start new containers
+        docker compose -f compose.prod.yaml up -d
+        
+        # Clean up old images
+        docker image prune -f
+      ENDSSH
+  environment:
+    name: production
+    url: http://$VPS_HOST
+  only:
+    - main
+  needs:
+    - build-backend
+    - build-frontend
