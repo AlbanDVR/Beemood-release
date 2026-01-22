@@ -21,11 +21,13 @@ CREATE TABLE IF NOT EXISTS Users (
 
 -- 3. Création de la table Playlists
 CREATE TABLE IF NOT EXISTS Playlists (
-    ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ID VARCHAR(255) PRIMARY KEY,
     Author UUID,
     Title VARCHAR(255),
-    Tracks VARCHAR[], 
+    Descr VARCHAR(255),
+    Duration INTEGER, 
     MusicService VARCHAR(255),
+    RedirectionService VARCHAR(255),
     
     CONSTRAINT fk_playlist_author
         FOREIGN KEY (Author) 
