@@ -3,12 +3,9 @@ stages:
   - deploy
 
 variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: "/certs"
   REGISTRY_URL: $CI_REGISTRY
   IMAGE_TAG: $CI_COMMIT_SHORT_SHA
   GIT_SUBMODULE_STRATEGY: recursive
-  GIT_SUBMODULE_FORCE_HTTPS: "true"
 
 # Build backend image
 build-backend:
@@ -17,10 +14,6 @@ build-backend:
   services:
     - docker:24-dind
   before_script:
-    - |
-      # Configure git to use HTTPS instead of SSH for submodules
-      apk add --no-cache git
-      git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@forge.univ-lyon1.fr/".insteadOf "git@forge.univ-lyon1.fr:"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker build -f ./back/Dockerfile.prod -t $CI_REGISTRY_IMAGE/backend:$IMAGE_TAG -t $CI_REGISTRY_IMAGE/backend:latest ./back
@@ -36,10 +29,6 @@ build-frontend:
   services:
     - docker:24-dind
   before_script:
-    - |
-      # Configure git to use HTTPS instead of SSH for submodules
-      apk add --no-cache git
-      git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@forge.univ-lyon1.fr/".insteadOf "git@forge.univ-lyon1.fr:"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker build -f ./front/Dockerfile.prod -t $CI_REGISTRY_IMAGE/frontend:$IMAGE_TAG -t $CI_REGISTRY_IMAGE/frontend:latest ./front
@@ -66,7 +55,7 @@ deploy-vps:
         cd /home/milo/apps/docker/beemood
         
         # Pull latest code
-        git pull origin main || git pull origin master
+        git pull origin main
         
         # Create/update .env file with secrets
         cat > dev.env << 'EOF'
