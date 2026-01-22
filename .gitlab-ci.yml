@@ -17,7 +17,7 @@ build-backend:
     - kaniko
   script:
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
+      --context "${CI_PROJECT_DIR}/back"
       --dockerfile "./back/Dockerfile.prod"
       --destination "${CI_REGISTRY_IMAGE}/backend:${IMAGE_TAG}"
       --destination "${CI_REGISTRY_IMAGE}/backend:latest"
@@ -34,7 +34,7 @@ build-frontend:
     - kaniko
   script:
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
+      --context "${CI_PROJECT_DIR}/front"
       --dockerfile "./front/Dockerfile.prod"
       --destination "${CI_REGISTRY_IMAGE}/frontend:${IMAGE_TAG}"
       --destination "${CI_REGISTRY_IMAGE}/frontend:latest"
