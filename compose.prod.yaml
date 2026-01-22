@@ -18,6 +18,10 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER:-beemood}:${POSTGRES_PASSWORD:-beemood}@db:5432/${POSTGRES_DB:-beemood}"
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_CLIENT_SECRET: ${SPOTIFY_CLIENT_SECRET}
+      SPOTIFY_REDIRECT_URI: ${SPOTIFY_REDIRECT_URI}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     depends_on:
       - db
     ports:
