@@ -10,11 +10,13 @@ CREATE TABLE IF NOT EXISTS MusicServices (
 );
 
 -- 2. Création de la table Users
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE IF NOT EXISTS users (
     ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     SpotifyUserID VARCHAR(255),
     SpotifyAccessToken VARCHAR,
     SpotifyRefreshToken VARCHAR,
+    SpotifyExpiresIn INTEGER,
+    SpotifyTimeTokenCreated FLOAT,
     AuthToken VARCHAR,
     JoinTime DATE DEFAULT CURRENT_DATE
 );
@@ -31,7 +33,7 @@ CREATE TABLE IF NOT EXISTS Playlists (
     
     CONSTRAINT fk_playlist_author
         FOREIGN KEY (Author) 
-        REFERENCES Users(ID)
+        REFERENCES users(ID)
         ON DELETE CASCADE,
         
     CONSTRAINT fk_playlist_service
