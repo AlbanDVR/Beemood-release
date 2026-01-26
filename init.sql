@@ -41,3 +41,17 @@ CREATE TABLE IF NOT EXISTS Playlists (
         REFERENCES MusicServices(Name)
         ON DELETE SET NULL
 );
+
+CREATE TABLE IF NOT EXISTS Stat(
+    ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    UserID UUID,
+    PlaylistNumber INTEGER,
+    ListeningTime INTEGER,
+    ConnectionNumber INTEGER,
+    FavoriteGenre VARCHAR(255),
+
+    CONSTRAINT fk_playlist_creation_author
+        FOREIGN KEY (UserID)
+        REFERENCES  users(ID)
+        ON DELETE CASCADE
+)
