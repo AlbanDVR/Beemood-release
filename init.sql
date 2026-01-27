@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS Playlists (
     Title VARCHAR(255),
     Descr VARCHAR(255),
     Duration INTEGER, 
+    TrackNb INTEGER,
     MusicService VARCHAR(255),
     RedirectionService VARCHAR(255),
     
