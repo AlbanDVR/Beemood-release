@@ -42,6 +42,23 @@ CREATE TABLE IF NOT EXISTS Playlists (
         ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS Playlist_Likes (
+    Playlist_ID VARCHAR(255),
+    User_ID UUID,
+    
+    PRIMARY KEY (Playlist_ID, User_ID),
+    
+    CONSTRAINT fk_playlist_like_playlist
+        FOREIGN KEY (Playlist_ID)
+        REFERENCES Playlists(ID)
+        ON DELETE CASCADE,
+        
+    CONSTRAINT fk_playlist_like_user
+        FOREIGN KEY (User_ID)
+        REFERENCES users(ID)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS Stat(
     ID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     UserID UUID,
