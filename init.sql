@@ -74,3 +74,28 @@ CREATE TABLE IF NOT EXISTS Stat(
         REFERENCES  users(ID)
         ON DELETE CASCADE
 )
+
+CREATE TABLE IF NOT EXISTS beemood.Artistes (
+    Id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    SpotifyArtisteName VARCHAR(255),
+    SpotifyArtisteID VARCHAR(255),
+    Genre VARCHAR(255),
+    Popularity INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS beemood.ArtisteDansPlaylist (
+  ArtistId UUID,
+  PlaylistId VARCHAR(255),
+
+  PRIMARY KEY (ArtistId, PlaylistId),
+
+  CONSTRAINT fk_playlist_id
+          FOREIGN KEY (PlaylistId)
+          REFERENCES  beemood.Playlists(ID)
+          ON DELETE CASCADE,
+
+  CONSTRAINT fk_artist_id
+            FOREIGN KEY (ArtistId)
+            REFERENCES  beemood.Artistes(ID)
+            ON DELETE CASCADE
+);
